@@ -17,6 +17,8 @@ package com.google.zxing.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -58,7 +60,7 @@ import java.lang.reflect.Field;
  * @author dswitkin@google.com (Daniel Switkin)
  * @author Sean Owen
  */
-public final class CaptureActivity extends Activity implements SurfaceHolder.Callback {
+public class CaptureActivity extends Activity implements SurfaceHolder.Callback {
 
     private static final String TAG = CaptureActivity.class.getSimpleName();
 
@@ -89,7 +91,8 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     private Intent mIntent = null;
     private ICapturePresenter mPresenter;
     private static final int ROTATION_DURATION = 3 * 1000;
-    private CaptureHandler mHandler;
+    RotateAnimation rotateAnimation;
+//    private CaptureHandler mHandler;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -101,7 +104,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         //初始化蓝牙的Bluetooth adapter
         BLEUtils.getInstance().initBlueToothAdapter(this);
         mPresenter = new CapturePresenter(this);
-        mHandler = new CaptureHandler();
+//        mHandler = new CaptureHandler();
 
         scanPreview = (SurfaceView) findViewById(R.id.capture_preview);
         scanContainer = (RelativeLayout) findViewById(R.id.capture_container);
@@ -127,14 +130,14 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
      */
     private void showWaitingCircle() {
         linear_scan_center.setVisibility(View.VISIBLE);
-        RotateAnimation animation = new RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF,
+        rotateAnimation = new RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF,
                 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        animation.setInterpolator(new LinearInterpolator());
-        animation.setRepeatCount(50);
-        animation.setDuration(ROTATION_DURATION);
+        rotateAnimation.setInterpolator(new LinearInterpolator());
+        rotateAnimation.setRepeatCount(50);
+        rotateAnimation.setDuration(ROTATION_DURATION);
 //        animation.setRepeatCount(-1);
 //        animation.setRepeatMode(Animation.RESTART);
-        img_waiting.startAnimation(animation);
+        img_waiting.startAnimation(rotateAnimation);
     }
 
     @Override
@@ -222,7 +225,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
         showWaitingCircle();
         //连接蓝牙
-        mPresenter.connectBlueTooth(rawResult.getText(),mHandler);
+        mPresenter.connectBlueTooth(rawResult.getText());
 //        bundle.putString("data", rawResult.getText());
 //        setResult(MainActivity.RESULT_CODE, mIntent.putExtras(bundle));
 //        finish();
@@ -338,16 +341,27 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     }
 
 
-    public static final int ACCESS_OK = 0x10;
+    //    public static final int ACCESS_OK = 0x10;
+//    class CaptureHandler extends Handler {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            super.handleMessage(msg);
+//            switch (msg.what) {
+//                case ACCESS_OK:
+//
+//                    break;
+//            }
+//        }
+//    }
+    public static final String ACCESS_DATA_SUCCESS = "com.example.bluetooth.ACCESS_DATA_SUCCESS";
 
-    class CaptureHandler extends Handler {
+    public class CaptureBoradCast extends BroadcastReceiver {
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case ACCESS_OK:
-
-                    break;
+        public void onReceive(Context context, Intent intent) {
+            if (ACCESS_DATA_SUCCESS.equals(intent.getAction())) {
+                linear_scan_center.setVisibility(View.GONE);
+                if (rotateAnimation != null)
+                    rotateAnimation.cancel();
             }
         }
     }

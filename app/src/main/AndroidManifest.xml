@@ -52,6 +52,12 @@
             android:name="com.google.zxing.activity.CaptureActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" />
+
+        <receiver android:name="com.google.zxing.activity.CaptureActivity$CaptureBoradCast">
+            <intent-filter>
+                <action android:name="com.example.bluetooth.ACCESS_DATA_SUCCESS"/>
+            </intent-filter>
+        </receiver>
         <activity
             android:name="com.google.zxing.activity.ResultActivity"
             android:screenOrientation="portrait"

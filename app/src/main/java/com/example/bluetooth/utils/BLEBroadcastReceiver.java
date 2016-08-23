@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.zxing.activity.CaptureActivity;
+
 import java.util.List;
 
 /**
@@ -36,6 +38,8 @@ public class BLEBroadcastReceiver extends BroadcastReceiver {
             Toast.makeText(context, "获取数据！", Toast.LENGTH_SHORT).show();
 //            BluetoothGattServerCallback mBluetoothLeService = null;
             displayGattServices(BLEUtils.getInstance().getSupportedGattServices());
+            Intent sendIntent = new Intent(CaptureActivity.ACCESS_DATA_SUCCESS);
+            context.sendBroadcast(intent);
         } else if (BLEUtils.ACTION_DATA_AVAILABLE.equals(action)) {
 
 //            displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));

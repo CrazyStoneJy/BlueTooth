@@ -19,8 +19,8 @@ public class CapturePresenter implements ICapturePresenter {
 
 
     @Override
-    public void connectBlueTooth(String macAddress, Handler handler) {
-        connectWithMac(macAddress,handler);
+    public void connectBlueTooth(String macAddress) {
+        connectWithMac(macAddress);
     }
 
     /**
@@ -28,7 +28,8 @@ public class CapturePresenter implements ICapturePresenter {
      *
      * @param macAddress
      */
-    private void connectWithMac(String macAddress,Handler handler) {
+
+    private void connectWithMac(String macAddress) {
         Toast.makeText(mActivity, macAddress, Toast.LENGTH_SHORT).show();
 //        BLEUtils.getInstance().openBlueTooth(mActivity);
         BLEUtils.getInstance().connect(BLEUtils.getInstance().getDeviceByMacAddress(macAddress));
