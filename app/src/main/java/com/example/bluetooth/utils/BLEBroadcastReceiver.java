@@ -29,8 +29,7 @@ public class BLEBroadcastReceiver extends BroadcastReceiver {
         } else if (BLEUtils.ACTION_GATT_DISCONNECTED.equals(action)) {
             mConnected = false;
 //            updateConnectionState(R.string.disconnected);
-//            invalidateOptionsMenu();
-//            clearUI();
+
         } else if (BLEUtils.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
             // Show all the supported services and characteristics on the
             // user interface.

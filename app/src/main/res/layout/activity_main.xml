@@ -11,6 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/linear1"
         android:orientation="horizontal">
 
         <Button
@@ -26,11 +27,24 @@
             android:text="断开" />
 
         <Button
-            android:id="@+id/btn_connect_with_mac_address"
+            android:id="@+id/btn_san_q_code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="通过mac地址直接连结" />
+            android:text="扫描二维码" />
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/linear1"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/txt_connect_by_mac"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="通过macaddress直连" />
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView

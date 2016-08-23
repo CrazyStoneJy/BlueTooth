@@ -10,7 +10,7 @@ import android.os.ParcelUuid;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.bluetooth.MainActivity;
+import com.example.bluetooth.ui.scan.MainActivity;
 
 import java.io.IOException;
 import java.io.InputStream;

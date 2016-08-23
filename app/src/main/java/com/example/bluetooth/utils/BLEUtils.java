@@ -68,29 +68,53 @@ public class BLEUtils {
         return mUtils;
     }
 
-    public void openBlueTooth(Activity activity, Handler handler) {
+    public void initBlueToothAdapter(Activity activity) {
+        this.mActivity = activity;
+        // Initializes Bluetooth adapter.
+        final BluetoothManager bluetoothManager =
+                (BluetoothManager) activity.getSystemService(Context.BLUETOOTH_SERVICE);
+        mBluetoothAdapter = bluetoothManager.getAdapter();
+    }
+
+    /**
+     * 若果用户没有开启蓝牙则弹出提示框询问用户是否打开蓝牙
+     *
+     * @param activity
+     */
+    public void openBlueTooth(Activity activity) {
         // Use this check to determine whether BLE is supported on the device. Then
         // you can selectively disable BLE-related features.
         if (!activity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             Toast.makeText(activity, "该设备不支持低功放蓝牙", Toast.LENGTH_SHORT).show();
         }
-        // Initializes Bluetooth adapter.
-        final BluetoothManager bluetoothManager =
-                (BluetoothManager) activity.getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = bluetoothManager.getAdapter();
+
         // Ensures Bluetooth is available on the device and it is enabled. If not,
         // displays a dialog requesting user permission to enable Bluetooth.
         if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             activity.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        } else {
-            if(handler!=null){
-                scan(true, handler);
-            }
         }
     }
 
+    /**
+     * 蓝牙是否打开
+     *
+     * @return  true 蓝牙开启
+     */
+    public boolean isOpenBlueTooth(Activity activity) {
+        // Initializes Bluetooth adapter.
+        final BluetoothManager bluetoothManager =
+                (BluetoothManager) activity.getSystemService(Context.BLUETOOTH_SERVICE);
+        BluetoothAdapter blueToothAdapter = bluetoothManager.getAdapter();
+        return blueToothAdapter.isEnabled();
+    }
 
+    /**
+     * 扫描周围打开蓝牙的设备
+     *
+     * @param enable
+     * @param mHandler
+     */
     public void scan(boolean enable, Handler mHandler) {
         if (enable) {
             // Stops scanning after a pre-defined scan period.
@@ -118,13 +142,24 @@ public class BLEUtils {
                 public void onLeScan(final BluetoothDevice device, int rssi,
                                      byte[] scanRecord) {
                     //连接开锁蓝牙设备
-
                     if (MAC_ADDRESS.equals(device.getAddress())) {
                         connect(device);
                     }
                     Log.d(TAG, "device name:" + device.getName() + ",device address:" + device.getAddress());
                 }
             };
+
+    /**
+     * 通过macaddress获取设备
+     *
+     * @param macAddress
+     * @return
+     */
+    public BluetoothDevice getDeviceByMacAddress(String macAddress) {
+        if (macAddress != null) return mBluetoothAdapter.getRemoteDevice(macAddress);
+        return null;
+    }
+
 
     /**
      * 连接蓝牙设备
@@ -252,14 +287,14 @@ public class BLEUtils {
         mBluetoothGatt = null;
     }
 
-    /**
-     * 绑定一个activity 必须调用
-     *
-     * @param activity
-     */
-    public void bindActivity(Activity activity) {
-        this.mActivity = activity;
-    }
+//    /**
+//     * 绑定一个activity 必须调用
+//     *
+//     * @param activity
+//     */
+//    public void bindActivity(Activity activity) {
+//        this.mActivity = activity;
+//    }
 
 
 }
